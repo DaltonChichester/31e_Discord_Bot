@@ -217,123 +217,129 @@ public class MedelRack implements Command
 	                }
 	            }
 	            
-	            int colsWeekly = 3;
-	            int rowsWeekly;
+	            BufferedImage finalImgWeekly = null;
+	            int chunkWidthWeekly = 0, chunkHeightWeekly = 0;
+	            int rowsWeekly = 0, colsWeekly = 0; 
 	            
-	            float tempWeekly = (float) numMedels2 / colsWeekly;   //we assume the no. of rows and cols are known and each chunk has equal width and height
+	            if(numMedels2 > 0)
+	            {
+		            colsWeekly = 3;
+		            
+		            float tempWeekly = (float) numMedels2 / colsWeekly;   //we assume the no. of rows and cols are known and each chunk has equal width and height
+		            
+		            double temp2Weekly = (tempWeekly - (int)tempWeekly);
+		
+		            int ratioWeekly = numMedels2%3;
+		            
+		            if(temp2Weekly > 0)
+		            {
+		            	rowsWeekly = (int)tempWeekly + 1;
+		            }
+		            else
+		            {
+		            	rowsWeekly = (int)tempWeekly;
+		            }
+		            
+		            int typeWeekly;
+		            //fetching image files
+		 
+		            FileInputStream[] imgFilesWeekly;
+		            
+		            if(ratioWeekly == 1)
+		            {
+		            	numMedels2 = numMedels2+2;
+		            	imgFilesWeekly = new FileInputStream[numMedels2+2];
+		            	
+		            	imgFilesWeekly[0] = new FileInputStream("Blank1_Medal.png");
+		            	imgFilesWeekly[1] = new FileInputStream(medelsNames2.get(0) + "_Medal.png");
+		            	imgFilesWeekly[2] = new FileInputStream("Blank1_Medal.png");
+		            	
+		            	for (int i = 1; i < numMedels2-2; i++) 
+		                {
+		                	imgFilesWeekly[i+2] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
+		                }
+		            }
+		            else if(ratioWeekly == 2)
+		            {
+		            	numMedels2 = numMedels2+1;
+		            	imgFilesWeekly = new FileInputStream[numMedels2+1];
+		            	
+		            	imgFilesWeekly[0] = new FileInputStream("Blank2_Medal.png");
+		            	
+		            	for (int i = 0; i < numMedels2-1; i++) 
+		                {
+		                	imgFilesWeekly[i+1] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
+		                }
+		            }
+		            else
+		            {
+		            	imgFilesWeekly = new FileInputStream[numMedels2];
+		            	
+		            	for (int i = 0; i < numMedels2; i++) 
+		                {
+		                	imgFilesWeekly[i] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
+		                }
+		            }
+		            
+		            //creating a bufferd image array from image files
+		            BufferedImage[] buffImagesWeekly = new BufferedImage[numMedels2];
+		            for (int i = 0; i < numMedels2; i++) 
+		            {
+						buffImagesWeekly[i] = ImageIO.read(imgFilesWeekly[i]);
+		            }
+		            
+		            typeWeekly = buffImagesWeekly[numMedels2-1].getType();
+		            chunkWidthWeekly = buffImagesWeekly[numMedels2-1].getWidth();
+		            chunkHeightWeekly = buffImagesWeekly[numMedels2-1].getHeight();
+		            
+		            int chunkWidth2Weekly = buffImagesWeekly[0].getWidth();
+		            int chunkHeight2Weekly = buffImagesWeekly[0].getHeight();
 	            
-	            double temp2Weekly = (tempWeekly - (int)tempWeekly);
 	
-	            int ratioWeekly = numMedels2%3;
-	            
-	            if(temp2Weekly > 0)
-	            {
-	            	rowsWeekly = (int)tempWeekly + 1;
-	            }
-	            else
-	            {
-	            	rowsWeekly = (int)tempWeekly;
-	            }
-	            
-	            int chunkWidthWeekly, chunkHeightWeekly;
-	            int typeWeekly;
-	            //fetching image files
-	 
-	            FileInputStream[] imgFilesWeekly;
-	            
-	            if(ratioWeekly == 1)
-	            {
-	            	numMedels2 = numMedels2+2;
-	            	imgFilesWeekly = new FileInputStream[numMedels2+2];
-	            	
-	            	imgFilesWeekly[0] = new FileInputStream("Blank1_Medal.png");
-	            	imgFilesWeekly[1] = new FileInputStream(medelsNames2.get(0) + "_Medal.png");
-	            	imgFilesWeekly[2] = new FileInputStream("Blank1_Medal.png");
-	            	
-	            	for (int i = 1; i < numMedels2-2; i++) 
-	                {
-	                	imgFilesWeekly[i+2] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
-	                }
-	            }
-	            else if(ratioWeekly == 2)
-	            {
-	            	numMedels2 = numMedels2+1;
-	            	imgFilesWeekly = new FileInputStream[numMedels2+1];
-	            	
-	            	imgFilesWeekly[0] = new FileInputStream("Blank2_Medal.png");
-	            	
-	            	for (int i = 0; i < numMedels2-1; i++) 
-	                {
-	                	imgFilesWeekly[i+1] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
-	                }
-	            }
-	            else
-	            {
-	            	imgFilesWeekly = new FileInputStream[numMedels2];
-	            	
-	            	for (int i = 0; i < numMedels2; i++) 
-	                {
-	                	imgFilesWeekly[i] = new FileInputStream(medelsNames2.get(i) + "_Medal.png");
-	                }
-	            }
-	            
-	            //creating a bufferd image array from image files
-	            BufferedImage[] buffImagesWeekly = new BufferedImage[numMedels2];
-	            for (int i = 0; i < numMedels2; i++) 
-	            {
-					buffImagesWeekly[i] = ImageIO.read(imgFilesWeekly[i]);
-	            }
-	            
-	            typeWeekly = buffImagesWeekly[numMedels2-1].getType();
-	            chunkWidthWeekly = buffImagesWeekly[numMedels2-1].getWidth();
-	            chunkHeightWeekly = buffImagesWeekly[numMedels2-1].getHeight();
-	            
-	            int chunkWidth2Weekly = buffImagesWeekly[0].getWidth();
-	            int chunkHeight2Weekly = buffImagesWeekly[0].getHeight();
-	
-	            //Initializing the final image
-	            BufferedImage finalImgWeekly = new BufferedImage(chunkWidthWeekly*colsWeekly, chunkHeightWeekly*rowsWeekly, typeWeekly);
-	            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[0], 0, 0, null);
-	            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[1], chunkWidth2Weekly, 0, null);
-	            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[2], chunkWidth2Weekly + chunkWidthWeekly, 0, null);
-	            
-	            if(ratioWeekly == 2)
-	            {
-	            	int numWeekly = 3;
-	                for (int i = 1; i < rowsWeekly; i++) 
-	                {
-	                    for (int j = 0; j < colsWeekly; j++) 
-	                    {                	
-	                    	if(numWeekly == numMedels2)
-	                    	{
-	                    		break;
-	                    	}
-	                    	else
-	                    	{
-	                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
-	                            numWeekly++;
-	                    	}
-	                    }
-	                }
-	            }
-	            else
-	            {
-	            	int numWeekly = 0;
-	                for (int i = 0; i < rowsWeekly; i++) 
-	                {
-	                    for (int j = 0; j < colsWeekly; j++) 
-	                    {    	
-	                    	if(numWeekly == numMedels2)
-	                    	{
-	                    		break;
-	                    	}
-	                    	else
-	                    	{
-	                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
-	                            numWeekly++;
-	                    	}
-	                    }
-	                }
+		            //Initializing the final image
+		            finalImgWeekly = new BufferedImage(chunkWidthWeekly*colsWeekly, chunkHeightWeekly*rowsWeekly, typeWeekly);
+		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[0], 0, 0, null);
+		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[1], chunkWidth2Weekly, 0, null);
+		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[2], chunkWidth2Weekly + chunkWidthWeekly, 0, null);
+		            
+		            if(ratioWeekly == 2)
+		            {
+		            	int numWeekly = 3;
+		                for (int i = 1; i < rowsWeekly; i++) 
+		                {
+		                    for (int j = 0; j < colsWeekly; j++) 
+		                    {                	
+		                    	if(numWeekly == numMedels2)
+		                    	{
+		                    		break;
+		                    	}
+		                    	else
+		                    	{
+		                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
+		                            numWeekly++;
+		                    	}
+		                    }
+		                }
+		            }
+		            else
+		            {
+		            	int numWeekly = 0;
+		                for (int i = 0; i < rowsWeekly; i++) 
+		                {
+		                    for (int j = 0; j < colsWeekly; j++) 
+		                    {    	
+		                    	if(numWeekly == numMedels2)
+		                    	{
+		                    		break;
+		                    	}
+		                    	else
+		                    	{
+		                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
+		                            numWeekly++;
+		                    	}
+		                    }
+		                }
+		            }
 	            }
 	            
 	            BufferedImage buffImage2 = ImageIO.read(new FileInputStream("Medal Frame2.png"));
@@ -355,8 +361,10 @@ public class MedelRack implements Command
 	            finalImg2.createGraphics().drawImage(buffImage2_3, 0, (chunkHeight3_1 + chunkHeight3_2), null);
 	            finalImg2.createGraphics().drawImage(buffImage2, 0, 0, null);
 	            
-	            finalImg2.createGraphics().drawImage(finalImgWeekly, ((chunkWidth3_1/2) - ((chunkWidthWeekly*3)/2)), (chunkHeight3_1 + ((chunkHeight3_2/2) - ((chunkHeightWeekly*rowsWeekly)/2))), null);
-	            
+	            if(numMedels2 > 0)
+	            {
+	            	finalImg2.createGraphics().drawImage(finalImgWeekly, ((chunkWidth3_1/2) - ((chunkWidthWeekly*3)/2)), (chunkHeight3_1 + ((chunkHeight3_2/2) - ((chunkHeightWeekly*rowsWeekly)/2))), null);
+	            }
 	            finalImg2.createGraphics().drawImage(finalImg, ((chunkWidth3_1/2) - ((chunkWidth*3)/2)), ((chunkHeight3_1 + chunkHeight3_2) + ((chunkHeight3_3/2) - ((chunkHeight*rows)/2))), null);
 	            
 	            //System.out.println("Image concatenated.....");
