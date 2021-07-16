@@ -3,6 +3,7 @@ package DaltonChichester.ThirtyOneEBot.Commands;
 import DaltonChichester.ThirtyOneEBot.Command;
 import DaltonChichester.ThirtyOneEBot.Constants;
 import DaltonChichester.ThirtyOneEBot.tools.Tools;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
@@ -59,5 +60,11 @@ public class Ping implements Command
         return "Gives you the gateway ping of the bot!\n" +
                 "Usage: `" + Constants.BotPrefix + getCommand() + "`";
     }
+
+	@Override
+	public void runS(SlashCommandEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

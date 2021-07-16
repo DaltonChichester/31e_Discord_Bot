@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import DaltonChichester.ThirtyOneEBot.Commands.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
@@ -30,6 +31,7 @@ public class Manager
     	addCommand(new Meme());
     	addCommand(new MedelRack());
     	addCommand(new UserInfo());
+    	addCommand(new UpdateMedalChannel());
         
         //private commands
         addPCommand(new Help(this));
@@ -105,6 +107,23 @@ public class Manager
         }
     }
     
+    public void runS(SlashCommandEvent event) 
+    {
+    	final String command = event.getName().toLowerCase();
+    	
+    	if(commands.containsKey(command)) 
+        {
+			try 
+			{
+				commands.get(command).runS(event);
+			} catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+	}
+    
     void runP(PrivateMessageReceivedEvent event)
     {
         final String msg = event.getMessage().getContentRaw();
@@ -132,6 +151,5 @@ public class Manager
         {
             return;
         }
-    	
     }
 }

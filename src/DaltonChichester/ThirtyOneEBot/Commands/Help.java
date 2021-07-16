@@ -5,6 +5,7 @@ import DaltonChichester.ThirtyOneEBot.Constants;
 import DaltonChichester.ThirtyOneEBot.Manager;
 import DaltonChichester.ThirtyOneEBot.tools.Tools;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
@@ -128,4 +129,10 @@ public class Help implements Command
         return "Gives you a list of existing commands associated with this bot!\n" +
                 "Usage: `" + Constants.BotPrefix + getCommand() + " <command>`";
     }
+
+	@Override
+	public void runS(SlashCommandEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

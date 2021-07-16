@@ -2,6 +2,7 @@ package DaltonChichester.ThirtyOneEBot;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -53,5 +54,10 @@ public class Listener extends ListenerAdapter {
     {
     	System.out.println("Received private message from " + event.getAuthor() + ", saying: " + event.getMessage().getContentRaw());
     	m.runP(event);
+    }
+    
+    public void onSlashCommand(SlashCommandEvent event)
+    {
+        m.runS(event);
     }
 }

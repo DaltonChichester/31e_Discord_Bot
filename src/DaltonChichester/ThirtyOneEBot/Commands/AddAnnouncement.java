@@ -5,6 +5,7 @@ import DaltonChichester.ThirtyOneEBot.Constants;
 import DaltonChichester.ThirtyOneEBot.tools.AnnouncementMaker;
 import DaltonChichester.ThirtyOneEBot.tools.Tools;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
@@ -49,6 +50,11 @@ public class AddAnnouncement implements Command
 			Tools.wrongUsage(event.getChannel(), this);
 		}
     }
+    
+    @Override
+	public void runS(SlashCommandEvent event) 
+    {
+	}
     
     @Override
     public void runP(List<String> args, PrivateMessageReceivedEvent event) 
@@ -104,4 +110,6 @@ public class AddAnnouncement implements Command
                 "Usage: `" + Constants.BotPrefix + getCommand() + " <Day You want it Posted>|<Hour You want it Posted>|<Minute You want it Posted>|<Reaction value you want added to message>|"
                 		+ "\n<Message You want Posted>`";
     }
+
+	
 }

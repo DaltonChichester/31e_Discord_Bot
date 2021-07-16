@@ -5,6 +5,7 @@ import DaltonChichester.ThirtyOneEBot.Constants;
 import DaltonChichester.ThirtyOneEBot.tools.Tools;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
@@ -72,4 +73,10 @@ public class UserInfo implements Command
         return "Gives information about the user!\n" +
                 "Usage: `" + Constants.BotPrefix + getCommand() + " <@user>`";
     }
+
+	@Override
+	public void runS(SlashCommandEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
