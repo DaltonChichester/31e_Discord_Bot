@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.EOFException;
@@ -26,6 +27,9 @@ import javax.imageio.ImageIO;
 
 public class MedelRack implements Command 
 {
+	String filePathRibbon = "31eMedals/RibbonRack/";
+	AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
+	
     @Override
     public void run(List<String> args, GuildMessageReceivedEvent event) throws IOException 
     {
@@ -90,6 +94,11 @@ public class MedelRack implements Command
             		roles.get(i).getName().equals("Receptionist") ||
             		roles.get(i).getName().equals("Assasinated") ||
             		roles.get(i).getName().equals("Committed") ||
+            		roles.get(i).getName().equals("Reliable") ||
+            		roles.get(i).getName().equals("Stomper") ||
+            		roles.get(i).getName().equals("Anti-Cav") ||
+            		roles.get(i).getName().equals("Terracotta Medalion") ||
+            		roles.get(i).getName().equals("Chinese Expedition") ||
             		roles.get(i).getName().equals("Diligent"))
             	{
             		medelsNames.add(roles.get(i).getName());
@@ -147,13 +156,13 @@ public class MedelRack implements Command
 	            	numMedels = numMedels+2;
 	            	imgFiles = new FileInputStream[numMedels+2];
 	            	
-	            	imgFiles[0] = new FileInputStream("Medals/Blank1_Medal.png");
-	            	imgFiles[1] = new FileInputStream("Medals/" + medelsNames.get(0) + "_Medal.png");
-	            	imgFiles[2] = new FileInputStream("Medals/Blank1_Medal.png");
+	            	imgFiles[0] = new FileInputStream("31eMedals/Blank1_Medal.png");
+	            	imgFiles[1] = new FileInputStream(filePathRibbon + medelsNames.get(0) + "_Ribbon.png");
+	            	imgFiles[2] = new FileInputStream("31eMedals/Blank1_Medal.png");
 	            	
 	            	for (int i = 1; i < numMedels-2; i++) 
 	                {
-	                	imgFiles[i+2] = new FileInputStream(medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i+2] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            else if(ratio == 2)
@@ -161,11 +170,11 @@ public class MedelRack implements Command
 	            	numMedels = numMedels+1;
 	            	imgFiles = new FileInputStream[numMedels+1];
 	            	
-	            	imgFiles[0] = new FileInputStream("Medals/Blank2_Medal.png");
+	            	imgFiles[0] = new FileInputStream("31eMedals/Blank2_Medal.png");
 	            	
 	            	for (int i = 0; i < numMedels-1; i++) 
 	                {
-	                	imgFiles[i+1] = new FileInputStream("Medals/" + medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i+1] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            else
@@ -174,7 +183,7 @@ public class MedelRack implements Command
 	            	
 	            	for (int i = 0; i < numMedels; i++) 
 	                {
-	                	imgFiles[i] = new FileInputStream("Medals/" + medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            
@@ -185,7 +194,7 @@ public class MedelRack implements Command
 					buffImages[i] = ImageIO.read(imgFiles[i]);
 	            }
 	            
-	            type = buffImages[numMedels-1].getType();
+	            type = BufferedImage.TYPE_INT_ARGB;
 	            chunkWidth = buffImages[numMedels-1].getWidth();
 	            chunkHeight = buffImages[numMedels-1].getHeight();
 	            
@@ -194,9 +203,17 @@ public class MedelRack implements Command
 	
 	            //Initializing the final image
 	            BufferedImage finalImg = new BufferedImage(chunkWidth*cols, chunkHeight*rows, type);
-	            finalImg.createGraphics().drawImage(buffImages[0], 0, 0, null);
-	            finalImg.createGraphics().drawImage(buffImages[1], chunkWidth2, 0, null);
-	            finalImg.createGraphics().drawImage(buffImages[2], chunkWidth2 + chunkWidth, 0, null);
+	            
+	            Graphics2D g = finalImg.createGraphics();
+	            g.setComposite(AlphaComposite.Clear);
+	            g.fillRect(0,0, chunkWidth*cols, chunkHeight*rows);
+	            
+	            g.setComposite(AlphaComposite.SrcOver);
+	            
+	            g.drawImage(buffImages[0], 0, 0, null);
+	            g.drawImage(buffImages[1], chunkWidth2, 0, null);
+	            g.drawImage(buffImages[2], chunkWidth2 + chunkWidth, 0, null);
+	            
 	            
 	            if(ratio == 2)
 	            {
@@ -211,7 +228,7 @@ public class MedelRack implements Command
 	                    	}
 	                    	else
 	                    	{
-	                    		finalImg.createGraphics().drawImage(buffImages[num], chunkWidth * j, chunkHeight * i, null);
+	                    		g.drawImage(buffImages[num], chunkWidth * j, chunkHeight * i, null);
 	                            num++;
 	                    	}
 	                    }
@@ -230,7 +247,7 @@ public class MedelRack implements Command
 	                    	}
 	                    	else
 	                    	{
-	                    		finalImg.createGraphics().drawImage(buffImages[num], chunkWidth * j, chunkHeight * i, null);
+	                    		g.drawImage(buffImages[num], chunkWidth * j, chunkHeight * i, null);
 	                            num++;
 	                    	}
 	                    }
@@ -270,13 +287,13 @@ public class MedelRack implements Command
 		            	numMedels2 = numMedels2+2;
 		            	imgFilesWeekly = new FileInputStream[numMedels2+2];
 		            	
-		            	imgFilesWeekly[0] = new FileInputStream("Medals/Blank1_Medal.png");
-		            	imgFilesWeekly[1] = new FileInputStream("Medals/" + medelsNames2.get(0) + "_Medal.png");
-		            	imgFilesWeekly[2] = new FileInputStream("Medals/Blank1_Medal.png");
+		            	imgFilesWeekly[0] = new FileInputStream("31eMedals/Blank1_Medal.png");
+		            	imgFilesWeekly[1] = new FileInputStream(filePathRibbon + medelsNames2.get(0) + "_Ribbon.png");
+		            	imgFilesWeekly[2] = new FileInputStream("31eMedals/Blank1_Medal.png");
 		            	
 		            	for (int i = 1; i < numMedels2-2; i++) 
 		                {
-		                	imgFilesWeekly[i+2] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i+2] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            else if(ratioWeekly == 2)
@@ -284,11 +301,11 @@ public class MedelRack implements Command
 		            	numMedels2 = numMedels2+1;
 		            	imgFilesWeekly = new FileInputStream[numMedels2+1];
 		            	
-		            	imgFilesWeekly[0] = new FileInputStream("Medals/Blank2_Medal.png");
+		            	imgFilesWeekly[0] = new FileInputStream("31eMedals/Blank2_Medal.png");
 		            	
 		            	for (int i = 0; i < numMedels2-1; i++) 
 		                {
-		                	imgFilesWeekly[i+1] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i+1] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            else
@@ -297,12 +314,13 @@ public class MedelRack implements Command
 		            	
 		            	for (int i = 0; i < numMedels2; i++) 
 		                {
-		                	imgFilesWeekly[i] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            
 		            //creating a bufferd image array from image files
 		            BufferedImage[] buffImagesWeekly = new BufferedImage[numMedels2];
+		            
 		            for (int i = 0; i < numMedels2; i++) 
 		            {
 						buffImagesWeekly[i] = ImageIO.read(imgFilesWeekly[i]);
@@ -317,10 +335,17 @@ public class MedelRack implements Command
 	            
 	
 		            //Initializing the final image
-		            finalImgWeekly = new BufferedImage(chunkWidthWeekly*colsWeekly, chunkHeightWeekly*rowsWeekly, typeWeekly);
-		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[0], 0, 0, null);
-		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[1], chunkWidth2Weekly, 0, null);
-		            finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[2], chunkWidth2Weekly + chunkWidthWeekly, 0, null);
+		            finalImgWeekly = new BufferedImage(chunkWidthWeekly*colsWeekly-1, chunkHeightWeekly*rowsWeekly, type);
+		            
+		            g = finalImgWeekly.createGraphics();
+		            
+		            g.setComposite(AlphaComposite.Clear);
+		            g.fillRect(0,0, chunkWidthWeekly*colsWeekly, chunkHeightWeekly*rowsWeekly);
+		            
+		            g.setComposite(AlphaComposite.SrcOver);
+		            g.drawImage(buffImagesWeekly[0], 0, 0, null);
+		            g.drawImage(buffImagesWeekly[1], chunkWidth2Weekly, 0, null);
+		            g.drawImage(buffImagesWeekly[2], chunkWidth2Weekly + chunkWidthWeekly, 0, null);
 		            
 		            if(ratioWeekly == 2)
 		            {
@@ -335,7 +360,7 @@ public class MedelRack implements Command
 		                    	}
 		                    	else
 		                    	{
-		                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
+		                    		g.drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
 		                            numWeekly++;
 		                    	}
 		                    }
@@ -354,7 +379,7 @@ public class MedelRack implements Command
 		                    	}
 		                    	else
 		                    	{
-		                    		finalImgWeekly.createGraphics().drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
+		                    		g.drawImage(buffImagesWeekly[numWeekly], chunkWidthWeekly * j, chunkHeightWeekly * i, null);
 		                            numWeekly++;
 		                    	}
 		                    }
@@ -362,11 +387,11 @@ public class MedelRack implements Command
 		            }
 	            }
 	            
-	            BufferedImage buffImage2 = ImageIO.read(new FileInputStream("Medals/" + "Medal Frame2.png"));
-	            BufferedImage buffImage2_1 = ImageIO.read(new FileInputStream("Medals/" + "Medal Frame2-1.png"));
-	            BufferedImage buffImage2_2 = ImageIO.read(new FileInputStream("Medals/" + "Medal Frame2-2.png"));
-	            BufferedImage buffImage2_3 = ImageIO.read(new FileInputStream("Medals/" + "Medal Frame2-3.png"));
-	           
+	            BufferedImage buffImage2 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2.png"));
+	            BufferedImage buffImage2_1 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-1.png"));
+	            BufferedImage buffImage2_2 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-2.png"));
+	            BufferedImage buffImage2_3 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-3.png"));
+	            
 	            int chunkWidth3_1 = buffImage2_1.getWidth();
 	            int chunkHeight3_1 = buffImage2_1.getHeight();
 
@@ -375,29 +400,35 @@ public class MedelRack implements Command
 	            int chunkHeight3_3 = buffImage2_3.getHeight();
 	            
 	            BufferedImage finalImg2 = new BufferedImage((chunkWidth3_1), (chunkHeight3_1 + chunkHeight3_2 + chunkHeight3_3), type);
+
+	            g = finalImg2.createGraphics();
+	          
+	            g.setComposite(AlphaComposite.SrcOver);
+
+	            g.drawImage(buffImage2_1, 0, 0, null);
+	            g.drawImage(buffImage2_2, 0, chunkHeight3_1, null);
+	            g.drawImage(buffImage2_3, 0, (chunkHeight3_1 + chunkHeight3_2), null);
+	            g.drawImage(buffImage2, 0, 0, null);
 	            
-	            finalImg2.createGraphics().drawImage(buffImage2_1, 0, 0, null);
-	            finalImg2.createGraphics().drawImage(buffImage2_2, 0, chunkHeight3_1, null);
-	            finalImg2.createGraphics().drawImage(buffImage2_3, 0, (chunkHeight3_1 + chunkHeight3_2), null);
-	            finalImg2.createGraphics().drawImage(buffImage2, 0, 0, null);
 	            
 	            if(numMedels2 > 0)
 	            {
-	            	finalImg2.createGraphics().drawImage(finalImgWeekly, ((chunkWidth3_1/2) - ((chunkWidthWeekly*3)/2)), (chunkHeight3_1 + ((chunkHeight3_2/2) - ((chunkHeightWeekly*rowsWeekly)/2))), null);
+	            	g.drawImage(finalImgWeekly, ((chunkWidth3_1/2) - ((chunkWidthWeekly*3)/2)), (chunkHeight3_1 + ((chunkHeight3_2/2) - ((chunkHeightWeekly*rowsWeekly)/2))), null);
 	            }
-	            finalImg2.createGraphics().drawImage(finalImg, ((chunkWidth3_1/2) - ((chunkWidth*3)/2)), ((chunkHeight3_1 + chunkHeight3_2) + ((chunkHeight3_3/2) - ((chunkHeight*rows)/2))), null);
+	            g.drawImage(finalImg, ((chunkWidth3_1/2) - ((chunkWidth*3)/2)), ((chunkHeight3_1 + chunkHeight3_2) + ((chunkHeight3_3/2) - ((chunkHeight*rows)/2))), null);
 	            
 	            //System.out.println("Image concatenated.....");
 	
-				ImageIO.write(finalImg2, "png", new File("Medals/" + "31e_Medal_Rack.png"));
-            
+				ImageIO.write(finalImg2, "png", new File("31eMedals/" + "31e_Medal_Rack.png"));
 			
 	            EmbedBuilder embed = new EmbedBuilder();
-	            File file = new File("Medals/" + "31e_Medal_Rack.png");
-	            embed.setImage("attachment://Medals/31e_Medal_Rack.png")
+	            File file = new File("31eMedals/" + "31e_Medal_Rack.png");
+	            embed.setImage("attachment://31eMedals/31e_Medal_Rack.png")
 	                 .setDescription("This is your Ribbon Rack");
 	            
 	            event.getChannel().sendFile(file).embed(embed.build()).queue();
+	            
+	            g.dispose();
 			}
         }
     	else
@@ -468,6 +499,11 @@ public class MedelRack implements Command
             		roles.get(i).getName().equals("Receptionist") ||
             		roles.get(i).getName().equals("Assasinated") ||
             		roles.get(i).getName().equals("Committed") ||
+            		roles.get(i).getName().equals("Reliable") ||
+            		roles.get(i).getName().equals("Stomper") ||
+            		roles.get(i).getName().equals("Anti-Cav") ||
+            		roles.get(i).getName().equals("Terracotta Medalion") ||
+            		roles.get(i).getName().equals("Chinese Expedition") ||
             		roles.get(i).getName().equals("Diligent"))
             	{
             		medelsNames.add(roles.get(i).getName());
@@ -525,13 +561,13 @@ public class MedelRack implements Command
 	            	numMedels = numMedels+2;
 	            	imgFiles = new FileInputStream[numMedels+2];
 	            	
-	            	imgFiles[0] = new FileInputStream("Medals/Blank1_Medal.png");
-	            	imgFiles[1] = new FileInputStream("Medals/" + medelsNames.get(0) + "_Medal.png");
-	            	imgFiles[2] = new FileInputStream("Medals/Blank1_Medal.png");
+	            	imgFiles[0] = new FileInputStream("31eMedals/Blank1_Medal.png");
+	            	imgFiles[1] = new FileInputStream(filePathRibbon + medelsNames.get(0) + "_Ribbon.png");
+	            	imgFiles[2] = new FileInputStream("31eMedals/Blank1_Medal.png");
 	            	
 	            	for (int i = 1; i < numMedels-2; i++) 
 	                {
-	                	imgFiles[i+2] = new FileInputStream(medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i+2] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            else if(ratio == 2)
@@ -539,11 +575,11 @@ public class MedelRack implements Command
 	            	numMedels = numMedels+1;
 	            	imgFiles = new FileInputStream[numMedels+1];
 	            	
-	            	imgFiles[0] = new FileInputStream("Medals/Blank2_Medal.png");
+	            	imgFiles[0] = new FileInputStream("31eMedals/Blank2_Medal.png");
 	            	
 	            	for (int i = 0; i < numMedels-1; i++) 
 	                {
-	                	imgFiles[i+1] = new FileInputStream("Medals/" + medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i+1] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            else
@@ -552,7 +588,7 @@ public class MedelRack implements Command
 	            	
 	            	for (int i = 0; i < numMedels; i++) 
 	                {
-	                	imgFiles[i] = new FileInputStream("Medals/" + medelsNames.get(i) + "_Medal.png");
+	                	imgFiles[i] = new FileInputStream(filePathRibbon + medelsNames.get(i) + "_Ribbon.png");
 	                }
 	            }
 	            
@@ -648,13 +684,13 @@ public class MedelRack implements Command
 		            	numMedels2 = numMedels2+2;
 		            	imgFilesWeekly = new FileInputStream[numMedels2+2];
 		            	
-		            	imgFilesWeekly[0] = new FileInputStream("Medals/Blank1_Medal.png");
-		            	imgFilesWeekly[1] = new FileInputStream("Medals/" + medelsNames2.get(0) + "_Medal.png");
-		            	imgFilesWeekly[2] = new FileInputStream("Medals/Blank1_Medal.png");
+		            	imgFilesWeekly[0] = new FileInputStream("31eMedals/Blank1_Medal.png");
+		            	imgFilesWeekly[1] = new FileInputStream(filePathRibbon + medelsNames2.get(0) + "_Ribbon.png");
+		            	imgFilesWeekly[2] = new FileInputStream("31eMedals/Blank1_Medal.png");
 		            	
 		            	for (int i = 1; i < numMedels2-2; i++) 
 		                {
-		                	imgFilesWeekly[i+2] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i+2] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            else if(ratioWeekly == 2)
@@ -662,11 +698,11 @@ public class MedelRack implements Command
 		            	numMedels2 = numMedels2+1;
 		            	imgFilesWeekly = new FileInputStream[numMedels2+1];
 		            	
-		            	imgFilesWeekly[0] = new FileInputStream("Medals/Blank2_Medal.png");
+		            	imgFilesWeekly[0] = new FileInputStream("31eMedals/Blank2_Medal.png");
 		            	
 		            	for (int i = 0; i < numMedels2-1; i++) 
 		                {
-		                	imgFilesWeekly[i+1] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i+1] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            else
@@ -675,7 +711,7 @@ public class MedelRack implements Command
 		            	
 		            	for (int i = 0; i < numMedels2; i++) 
 		                {
-		                	imgFilesWeekly[i] = new FileInputStream("Medals/" + medelsNames2.get(i) + "_Medal.png");
+		                	imgFilesWeekly[i] = new FileInputStream(filePathRibbon + medelsNames2.get(i) + "_Ribbon.png");
 		                }
 		            }
 		            
@@ -740,10 +776,10 @@ public class MedelRack implements Command
 		            }
 	            }
 	            
-	            BufferedImage buffImage2 = ImageIO.read(new FileInputStream("Medals/Medal Frame2.png"));
-	            BufferedImage buffImage2_1 = ImageIO.read(new FileInputStream("Medals/Medal Frame2-1.png"));
-	            BufferedImage buffImage2_2 = ImageIO.read(new FileInputStream("Medals/Medal Frame2-2.png"));
-	            BufferedImage buffImage2_3 = ImageIO.read(new FileInputStream("Medals/Medal Frame2-3.png"));
+	            BufferedImage buffImage2 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2.png"));
+	            BufferedImage buffImage2_1 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-1.png"));
+	            BufferedImage buffImage2_2 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-2.png"));
+	            BufferedImage buffImage2_3 = ImageIO.read(new FileInputStream("31eMedals/" + "Medal Frame2-3.png"));
 	           
 	            int chunkWidth3_1 = buffImage2_1.getWidth();
 	            int chunkHeight3_1 = buffImage2_1.getHeight();
@@ -767,17 +803,18 @@ public class MedelRack implements Command
 	            
 	            //System.out.println("Image concatenated.....");
 	
-				ImageIO.write(finalImg2, "png", new File("Medals/31e_Medal_Rack.png"));
+				ImageIO.write(finalImg2, "png", new File("31eMedals/" + "31e_Medal_Rack.png"));
+            
 			
 	            EmbedBuilder embed = new EmbedBuilder();
-	            File file = new File("Medals/31e_Medal_Rack.png");
-	            embed.setImage("attachment://Medals/31e_Medal_Rack.png")
+	            File file = new File("31eMedals/" + "31e_Medal_Rack.png");
+	            embed.setImage("attachment://31eMedals/31e_Medal_Rack.png")
 	                 .setDescription("This is your Ribbon Rack");
 	            
 	            event.getChannel().sendFile(file).embed(embed.build()).queue();
 			}
-    	}
-       catch (IOException e) 
+        }
+    	catch (IOException e) 
     	{
 		// TODO Auto-generated catch block
 		e.printStackTrace();

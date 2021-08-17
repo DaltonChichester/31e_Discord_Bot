@@ -32,6 +32,7 @@ public class Manager
     	addCommand(new MedelRack());
     	addCommand(new UserInfo());
     	addCommand(new UpdateMedalChannel());
+    	addCommand(new EditMessage());
         
         //private commands
         addPCommand(new Help(this));
